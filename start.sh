@@ -2,7 +2,7 @@
 NEZHA_SERVER=${NEZHA_SERVER:-'nz.nezha.com'}
 NEZHA_PORT=${NEZHA_PORT:-'5555'}
 NEZHA_KEY=${NEZHA_KEY:-'eOLJC0tJpf8abcdefg'}
-TLS=${TLS:-''}
+NEZHA_TLS=${NEZHA_TLS:-''}
 ARGO_DOMAIN=${ARGO_DOMAIN:-''}
 ARGO_AUTH=${ARGO_AUTH:-''}
 UUID=${UUID:-'de04add9-5c68-8bab-870c-08cd5320df00'}
@@ -242,9 +242,9 @@ generate_config
 sleep 3
 
 
-if [ "$TLS" -eq 0 ]; then
+if [ "$NEZHA_TLS" -eq 0 ]; then
   NEZHA_TLS=''
-elif [ "$TLS" -eq 1 ]; then
+elif [ "$NEZHA_TLS" -eq 1 ]; then
   NEZHA_TLS='--tls'
 fi
 
@@ -311,7 +311,7 @@ keep3="nohup ./server $args >/dev/null 2>&1 &"
 } 
 
 run
-sleep 12
+sleep 8
 
 
 function get_argo_domain() {
@@ -323,7 +323,7 @@ function get_argo_domain() {
 }
 
 isp=$(curl -s https://speed.cloudflare.com/meta | awk -F\" '{print $26"-"$18"-"$30}' | sed -e 's/ /_/g')
-sleep 3
+sleep 2
 
 generate_links() {
   argo=$(get_argo_domain)
