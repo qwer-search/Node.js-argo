@@ -7,7 +7,6 @@ const app = express();
 const exec = require("child_process").exec;
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const fs = require("fs");
-const request = require("request");
 const path = require("path");
 const auth = require("basic-auth");
 const axios = require('axios');
@@ -86,15 +85,21 @@ function getSystemArchitecture() {
 
 // 下载必要运行文件
 function downloadFile(fileName, fileUrl, callback) {
-  let stream = fs.createWriteStream(path.join("./", fileName));
-  request(fileUrl)
-    .pipe(stream)
-    .on("close", function(err) {
-      if (err) {
-        callback(`Download ${fileName} file failed`);
-      } else {
+  axios({
+    method: 'get',
+    url: fileUrl,
+    responseType: 'stream',
+  })
+    .then(response => {
+      const stream = fs.createWriteStream(path.join('./', fileName));
+      response.data.pipe(stream);
+      stream.on('finish', function() {
+        stream.close();
         callback(null, fileName);
-      }
+      });
+    })
+    .catch(err => {
+      callback(`Download ${fileName} file failed`);
     });
 }
 
