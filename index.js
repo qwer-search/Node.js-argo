@@ -5,7 +5,6 @@ const port = process.env.PORT || 3000;
 const express = require("express");
 const app = express();
 const exec = require("child_process").exec;
-const { createProxyMiddleware } = require("http-proxy-middleware");
 const fs = require("fs");
 const path = require("path");
 const auth = require("basic-auth");
@@ -58,20 +57,6 @@ app.get("/sub", (req, res) => {
     res.status(401).send("Unauthorized");
   }
 });
-
-app.use(
-  "/",
-  createProxyMiddleware({
-    changeOrigin: true,
-    onProxyReq: function onProxyReq(proxyReq, req, res) { },
-    pathRewrite: {
-      "^/": "/",
-    },
-    target: "http://127.0.0.1:8080/",
-    ws: true,
-  })
-);
-
 
 // 判断系统架构
 function getSystemArchitecture() {
