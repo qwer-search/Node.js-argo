@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 NEZHA_SERVER=${NEZHA_SERVER:-'nz.nezha.com'}
-NEZHA_PORT=${NEZHA_PORT:-'5555'}
+NEZHA_PORT=${NEZHA_PORT:-'5555'} # 当端口为443时，自动开启tls
 NEZHA_KEY=${NEZHA_KEY:-'eOLJC0tJpf8abcdefg'}
-NEZHA_TLS=${NEZHA_TLS:-''}
 ARGO_DOMAIN=${ARGO_DOMAIN:-''}
 ARGO_AUTH=${ARGO_AUTH:-''}
 UUID=${UUID:-'de04add9-5c68-8bab-870c-08cd5320df00'}
 CFIP=${CFIP:-'skk.moe'}
-NAME=${NAME:-'ABCD'} #节点名称，例如：glitch，replit
+NAME=${NAME:-'ABCD'}
 
 # 生成xri配置文件
 generate_config() {
@@ -282,6 +281,11 @@ argo_type
 sleep 3
 
 run() {
+  if [ "$NEZHA_PORT" = 443 ]; then
+    NEZHA_TLS="--tls"
+  else
+    NEZHA_TLS=""
+  fi
   if [ -e swith ]; then
   chmod 775 swith
     if [ -n "$NEZHA_SERVER" ] && [ -n "$NEZHA_PORT" ] && [ -n "$NEZHA_KEY" ]; then
