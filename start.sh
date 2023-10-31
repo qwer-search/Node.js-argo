@@ -240,15 +240,8 @@ EOF
 generate_config
 sleep 3
 
-
-if [ "$NEZHA_TLS" -eq 0 ]; then
-  NEZHA_TLS=''
-elif [ "$NEZHA_TLS" -eq 1 ]; then
-  NEZHA_TLS='--tls'
-fi
-
 cleanup_files() {
-  rm -rf boot.log list.txt
+  rm -rf boot.log list.txt 
 }
 cleanup_files
 sleep 2
