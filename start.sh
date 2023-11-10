@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-NEZHA_SERVER=${NEZHA_SERVER:-'nz.nezha.com'}
-NEZHA_PORT=${NEZHA_PORT:-'5555'} # 当端口为443时，自动开启tls
-NEZHA_KEY=${NEZHA_KEY:-'eOLJC0tJpf8abcdefg'}
-ARGO_DOMAIN=${ARGO_DOMAIN:-''}
-ARGO_AUTH=${ARGO_AUTH:-''}
-UUID=${UUID:-'de04add9-5c68-8bab-870c-08cd5320df00'}
-CFIP=${CFIP:-'skk.moe'}
-NAME=${NAME:-'ABCD'}
+export NEZHA_SERVER=${NEZHA_SERVER:-'nz.abcd.com'}
+export NEZHA_PORT=${NEZHA_PORT:-'5555'} # 当端口为443时，自动开启tls
+export NEZHA_KEY=${NEZHA_KEY:-'abcdefghijk'}
+export ARGO_DOMAIN=${ARGO_DOMAIN:-''}
+export ARGO_AUTH=${ARGO_AUTH:-''}
+export UUID=${UUID:-'19bb8322-a565-4956-9696-a6c0bbf0408c'}
+export CFIP=${CFIP:-'skk.moe'}
+export NAME=${NAME:-'Vls'}
 
 # 生成xri配置文件
 generate_config() {
@@ -248,7 +248,7 @@ sleep 2
 
 argo_type() {
   if [[ -z $ARGO_AUTH || -z $ARGO_DOMAIN ]]; then
-    echo "ARGO_AUTH or ARGO_DOMAIN is empty, use interim Tunnels"
+    echo "ARGO_AUTH or ARGO_DOMAIN is empty, use Quick Tunnels"
     return
   fi
 
@@ -310,7 +310,6 @@ keep3="nohup ./server $args >/dev/null 2>&1 &"
 run
 sleep 8
 
-
 function get_argo_domain() {
   if [[ -n $ARGO_AUTH ]]; then
     echo "$ARGO_DOMAIN"
@@ -330,12 +329,13 @@ generate_links() {
 
   cat > list.txt <<EOF
 vless://${UUID}@${CFIP}:443?encryption=none&security=tls&sni=${argo}&type=ws&host=${argo}&path=%2Fvless?ed=2048#${NAME}-${isp}
+
 vmess://$(echo "$VMESS" | base64 -w0)
+
 trojan://${UUID}@${CFIP}:443?security=tls&sni=${argo}&type=ws&host=${argo}&path=%2Ftrojan?ed=2048#${NAME}-${isp}
 EOF
   cat list.txt
 base64 -w0 list.txt > sub.txt
-
   echo -e "files are saved successfully"
 }
 generate_links
@@ -415,7 +415,7 @@ generate_autodel() {
   cat > autodel.sh <<EOF
 while true; do
   rm -rf /app/.git
-  sleep 10
+  sleep 180
 done
 EOF
 }
