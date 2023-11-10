@@ -1,6 +1,7 @@
 const username = process.env.WEB_USERNAME || "admin";
 const password = process.env.WEB_PASSWORD || "password";
-const projectPageURL = `https://www.google.com`;// 替换为你的项目域名
+const projectPageURL = process.env.URL || `https://www.google.com`;// 替换为你的项目域名
+const intervalInMilliseconds = process.env.TIME || 2 * 60 * 1000; // 自动访问间隔时间
 const port = process.env.PORT || 3000;
 const express = require("express");
 const app = express();
@@ -10,7 +11,6 @@ const path = require("path");
 const auth = require("basic-auth");
 const axios = require('axios');
 const os = require('os');
-
 
 app.get("/", function(req, res) {
   res.send("hello world");
@@ -38,24 +38,15 @@ app.get("/list", (req, res) => {
   }
 });
 app.get("/sub", (req, res) => {
-  const user = auth(req);
-  if (
-    user &&
-    user.name === username &&
-    user.pass === password
-  ) {
-    fs.readFile("sub.txt", "utf8", (err, data) => {
-      if (err) {
-        console.error(err);
-        res.status(500).json({ error: "Error reading sub.txt" });
-      } else {
-        res.status(200).send(data);
-      }
-    });
-  } else {
-    res.set("WWW-Authenticate", 'Basic realm="Node"');
-    res.status(401).send("Unauthorized");
-  }
+  fs.readFile("sub.txt", "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "Error reading sub.txt" });
+    } else {
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.status(200).send(data);
+    }
+  });
 });
 
 // 判断系统架构
@@ -146,8 +137,7 @@ function downloadAndRunFiles() {
 }
 downloadAndRunFiles();
 
-// 定义访问间隔时间（2分钟）
-const intervalInMilliseconds = 2 * 60 * 1000;
+// 自动访问
 async function visitProjectPage() {
   try {
     // console.log(`Visiting project page: ${projectPageURL}`);
@@ -157,6 +147,5 @@ async function visitProjectPage() {
     console.error('Error visiting project page:', error.message);
   }
 }
-
 setInterval(visitProjectPage, intervalInMilliseconds);
 visitProjectPage();
