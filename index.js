@@ -43,7 +43,7 @@ app.get("/sub", (req, res) => {
       console.error(err);
       res.status(500).json({ error: "Error reading sub.txt" });
     } else {
-      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
       res.status(200).send(data);
     }
   });
